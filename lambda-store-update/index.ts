@@ -30,7 +30,6 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
             message: error.message
         });
     }
-
 }
 
 async function updateStore(store: any, storeUpdate: Store, docClient: DocumentClient) {
