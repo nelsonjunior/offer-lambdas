@@ -6,6 +6,13 @@ on:
       - main
     paths:
       - lambda-store-update/**
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Bump Version
+        default: v1.0.0
+        required: true
 jobs:
   deploy_lambda:
     runs-on: ubuntu-latest
@@ -24,8 +31,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-          working-directory: ./lambda-store-update
       - name: npm install
+        working-directory: lambda-store-update
         env:
           CI: true
         run: |
