@@ -38,6 +38,7 @@ jobs:
         run: |
           npm ci
       - name: Deploy lambda in AWS
+        working-directory: lambda-store-update/lambda-store-update
         run: |
           npx ncc build index.ts --minify=true
           zip -j deploy.zip ./dist/*
