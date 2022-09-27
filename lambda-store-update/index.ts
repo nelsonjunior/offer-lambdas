@@ -34,6 +34,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
 async function updateStore(store: any, storeUpdate: Store, docClient: DocumentClient) {
 
+    console.log(`Updating store ${store.storeID} with ${JSON.stringify(storeUpdate)}`);
+
     const changeItem = {
         storeID: store.storeID,
         name: storeUpdate.name,
@@ -48,7 +50,7 @@ async function updateStore(store: any, storeUpdate: Store, docClient: DocumentCl
         Item : changeItem
     };
 
-    console.log(`request put item ${paramsPut}`);
+    console.log(`request put item ${JSON.stringify(paramsPut)}`);
 
     const result = await docClient.put(paramsPut).promise();
 
