@@ -11,13 +11,17 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
         validateRequest(event);
 
-        const store = getStore(event.pathParameters.storeID, docClient)
+        const storeID = event.pathParameters.storeID;
+
+        const store = await valideExistsStore(storeID, docClient)
+
+        console.log(`store found ${JSON.stringify(store)}`);
 
         const storeUpdate = JSON.parse(event.body) as Store;
 
         validateStore(storeUpdate);
 
-        const changeItem = updateStore(store, storeUpdate, docClient);
+        const changeItem = await updateStore(storeID, storeUpdate, docClient);
 
         return createResponse({
             code: 200,
@@ -32,12 +36,12 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
 }
 
-async function updateStore(store: any, storeUpdate: Store, docClient: DocumentClient) {
+async function updateStore(storeID: string, storeUpdate: Store, docClient: DocumentClient) {
 
-    console.log(`Updating store ${store.storeID} with ${JSON.stringify(storeUpdate)}`);
+    console.log(`Updating store ${storeID} with ${JSON.stringify(storeUpdate)}`);
 
     const changeItem = {
-        storeID: store.storeID,
+        storeID: storeID,
         name: storeUpdate.name,
         description: storeUpdate.description,
         latitude: storeUpdate.latitude,
@@ -74,7 +78,7 @@ function validateRequest(event: APIGatewayProxyEvent) {
     }
 }
 
-async function getStore(storeID: string, docClient: DocumentClient): Promise<any> {
+async function valideExistsStore(storeID: string, docClient: DocumentClient): Promise<any> {
 
     const params = {
         TableName: STORE_TABLE,
