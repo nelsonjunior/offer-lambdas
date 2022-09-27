@@ -1,0 +1,11 @@
+.idea
+*.iml
+.DS_Store
+*/.DS_Store
+*/.idea/*
+*/.idea
+*/.iml
+*/.gradle/*
+*/.gradle
+*/dist/*
+*/node_modules/*
