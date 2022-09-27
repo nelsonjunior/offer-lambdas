@@ -31,11 +31,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - name: Deploy lambda in AWS
-        working-directory: lambda-store-update
-        run: ls
-      - name: npm install
-        working-directory: lambda-store-update
+      - name: Enter Lambda Directory
+        run: cd lambda-store-update | ls -la
+        echo: "Installing Dependencies"
+      - name: NPM Install
         env:
           CI: true
         run: |
