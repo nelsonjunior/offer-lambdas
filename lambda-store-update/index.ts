@@ -1,6 +1,5 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResultV2} from "aws-lambda";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import { DynamoDB } from "aws-sdk";
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
 
@@ -37,7 +36,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
 }
 
-async function updateStore(store: any, storeUpdate: Store, docClient: DocumentClient) {
+async function updateStore(store: Store, storeUpdate: Store, docClient: DocumentClient) {
 
     console.log(`Updating store ${store.storeID} with ${JSON.stringify(storeUpdate)}`);
 
@@ -79,7 +78,7 @@ function validateRequest(event: APIGatewayProxyEvent) {
     }
 }
 
-async function getStore(storeID: string, docClient: DocumentClient): Promise<any> {
+async function getStore(storeID: string, docClient: DocumentClient): Promise<Store> {
 
     const params = {
         TableName: STORE_TABLE,
@@ -89,16 +88,11 @@ async function getStore(storeID: string, docClient: DocumentClient): Promise<any
     const data = await docClient.get(params).promise();
     const item = data.Item;
 
-    const store = item as unknown as Store;
-
-    const storeUnmarshall = DynamoDB.Converter.unmarshall(item);
-
-    console.log(`store found ${JSON.stringify(store)} or ${JSON.stringify(storeUnmarshall)}`);
-
     if(!item) {
         throw new Error(`Store ${storeID} not found`);
     }
-    return item;
+
+    return item as unknown as Store;
 }
 
 function validateStore(store: Store) {
