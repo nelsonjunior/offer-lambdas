@@ -33,7 +33,6 @@ jobs:
           node-version: '12'
       - name: Enter Lambda Directory
         run: cd lambda-store-update | ls -la
-        echo: "Installing Dependencies"
       - name: NPM Install
         env:
           CI: true
