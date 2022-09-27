@@ -1,5 +1,6 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResultV2} from "aws-lambda";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { DynamoDB } from "aws-sdk";
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
 
@@ -13,7 +14,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
         const storeID = event.pathParameters.storeID;
 
-        const store = await valideExistsStore(storeID, docClient)
+        const store = await getStore(storeID, docClient)
 
         console.log(`store found ${JSON.stringify(store)}`);
 
@@ -78,7 +79,7 @@ function validateRequest(event: APIGatewayProxyEvent) {
     }
 }
 
-async function valideExistsStore(storeID: string, docClient: DocumentClient): Promise<any> {
+async function getStore(storeID: string, docClient: DocumentClient): Promise<any> {
 
     const params = {
         TableName: STORE_TABLE,
@@ -87,6 +88,12 @@ async function valideExistsStore(storeID: string, docClient: DocumentClient): Pr
 
     const data = await docClient.get(params).promise();
     const item = data.Item;
+
+    const store = item as unknown as Store;
+
+    const storeUnmarshall = DynamoDB.Converter.unmarshall(item);
+
+    console.log(`store found ${JSON.stringify(store)} or ${JSON.stringify(storeUnmarshall)}`);
 
     if(!item) {
         throw new Error(`Store ${storeID} not found`);
