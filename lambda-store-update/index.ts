@@ -58,6 +58,7 @@ async function updateStore(store: any, storeUpdate: Store, docClient: DocumentCl
 }
 
 function validateRequest(event: APIGatewayProxyEvent) {
+
     if (event.httpMethod !== 'PUT') {
         throw new Error(`getMethod only accept PUT method, you tried: ${event.httpMethod}`);
     }
@@ -72,6 +73,7 @@ function validateRequest(event: APIGatewayProxyEvent) {
 }
 
 async function getStore(storeID: string, docClient: DocumentClient): Promise<any> {
+
     const params = {
         TableName: STORE_TABLE,
         Key: {storeID: storeID},
@@ -87,6 +89,7 @@ async function getStore(storeID: string, docClient: DocumentClient): Promise<any
 }
 
 function validateStore(store: Store) {
+
     if (!store.latitude || !store.longitude) {
         throw new Error(`Campos latitude e longitude são obrigatórios!`);
     }
