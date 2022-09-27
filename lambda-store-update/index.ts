@@ -21,7 +21,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
         validateStore(storeUpdate);
 
-        const changeItem = await updateStore(storeID, storeUpdate, docClient);
+        const changeItem = await updateStore(store, storeUpdate, docClient);
 
         return createResponse({
             code: 200,
@@ -31,17 +31,17 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     } catch (error) {
         return createResponse({
             code: 400,
-            message: error.message
+            message: [error.message]
         });
     }
 }
 
-async function updateStore(storeID: string, storeUpdate: Store, docClient: DocumentClient) {
+async function updateStore(store: any, storeUpdate: Store, docClient: DocumentClient) {
 
-    console.log(`Updating store ${storeID} with ${JSON.stringify(storeUpdate)}`);
+    console.log(`Updating store ${store.storeID} with ${JSON.stringify(storeUpdate)}`);
 
     const changeItem = {
-        storeID: storeID,
+        storeID: store.storeID,
         name: storeUpdate.name,
         description: storeUpdate.description,
         latitude: storeUpdate.latitude,
