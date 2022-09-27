@@ -45,7 +45,7 @@ async function updateStore(store: any, storeUpdate: Store, docClient: DocumentCl
     };
 
     const paramsPut = {
-        TableName : 'store',
+        TableName : STORE_TABLE,
         Item : changeItem
     };
 
@@ -74,7 +74,7 @@ function validateRequest(event: APIGatewayProxyEvent) {
 
 async function getStore(storeID: string, docClient: DocumentClient): Promise<any> {
     const params = {
-        TableName: 'store',
+        TableName: STORE_TABLE,
         Key: {storeID: storeID},
     };
 
@@ -104,6 +104,8 @@ function createResponse(response: Response | ErrorResponse): APIGatewayProxyResu
         body: JSON.stringify(response)
     };
 }
+
+export const STORE_TABLE = 'store';
 
 export interface ErrorResponse {
     code: number;
