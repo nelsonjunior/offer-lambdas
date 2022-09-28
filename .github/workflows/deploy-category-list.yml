@@ -32,13 +32,13 @@ jobs:
         with:
           node-version: '12'
       - name: NPM Install
-        working-directory: lambda-category-list/lambda-category-list
+        working-directory: lambda-category-list
         env:
           CI: true
         run: |
           npm ci
       - name: Deploy lambda in AWS
-        working-directory: lambda-category-list/lambda-category-list
+        working-directory: lambda-category-list
         run: |
           npx ncc build index.ts --minify=true
           zip -j deploy.zip ./dist/*
