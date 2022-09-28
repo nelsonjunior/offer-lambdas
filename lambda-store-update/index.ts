@@ -29,10 +29,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         });
 
     } catch (error) {
-        return createResponse({
-            code: 400,
-            message: [error.message]
-        });
+        return createResponseError(error.message);
     }
 }
 
@@ -102,7 +99,9 @@ function validateStore(store: Store) {
     }
 }
 
-function createResponse(response: Response | ErrorResponse): APIGatewayProxyResultV2 {
+export const STORE_TABLE = 'store';
+
+function createResponse(response: Response): APIGatewayProxyResultV2 {
     return {
         statusCode: response.code,
         headers: {
@@ -110,15 +109,18 @@ function createResponse(response: Response | ErrorResponse): APIGatewayProxyResu
             'Access-Control-Allow-Credentials': true,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(response)
+        body: JSON.stringify(response.body)
     };
 }
 
-export const STORE_TABLE = 'store';
-
-export interface ErrorResponse {
-    code: number;
-    message: string[];
+function createResponseError(message: string): APIGatewayProxyResultV2 {
+    return createResponse({
+        code: 400,
+        body: {
+            code: 400,
+            message: [message]
+        }
+    });
 }
 
 export interface Response {
