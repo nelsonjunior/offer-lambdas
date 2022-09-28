@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - lambda-category-list/**
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Bump Version
+        default: v1.0.0
+        required: true
+jobs:
+  deploy_lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          path: lambda-store-update
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - name: NPM Install
+        working-directory: lambda-category-list/lambda-category-list
+        env:
+          CI: true
+        run: |
+          npm ci
+      - name: Deploy lambda in AWS
+        working-directory: lambda-category-list/lambda-category-list
+        run: |
+          npx ncc build index.ts --minify=true
+          zip -j deploy.zip ./dist/*
+          aws lambda update-function-code --function-name=offer-list-category --zip-file=fileb://deploy.zip
