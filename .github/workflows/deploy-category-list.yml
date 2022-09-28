@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Lambda Category List
 
 on:
   push:
