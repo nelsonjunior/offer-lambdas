@@ -1,4 +1,4 @@
-name: Deploy Lambda Store Update
+name: Deploy Lambda Store Get
 
 on:
   push:
