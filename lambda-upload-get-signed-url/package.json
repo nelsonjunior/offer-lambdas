@@ -15,7 +15,6 @@
     "@types/aws-lambda": "^8.10.106",
     "@types/node": "^18.7.23",
     "@vercel/ncc": "^0.34.0",
-    "aws-sdk": "^2.1224.0",
-    "uuid": "^3.3.2"
+    "aws-sdk": "^2.1224.0"
   }
 }
