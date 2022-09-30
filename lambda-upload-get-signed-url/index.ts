@@ -1,5 +1,5 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResultV2} from "aws-lambda";
-import {uuidv4} from "uuid";
+import {v4 as uuidv4} from 'uuid';
 import {APIGatewayProxyStructuredResultV2} from "aws-lambda/trigger/api-gateway-proxy";
 import {S3} from "aws-sdk";
 
