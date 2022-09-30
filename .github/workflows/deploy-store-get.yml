@@ -1,11 +1,11 @@
-name: Deploy Lambda Category List
+name: Deploy Lambda Store Update
 
 on:
   push:
     branches:
       - main
     paths:
-      - lambda-category-list/**
+      - lambda-store-get/**
 
   workflow_dispatch:
 
@@ -26,14 +26,14 @@ jobs:
         with:
           node-version: '12'
       - name: NPM Install
-        working-directory: lambda-category-list
+        working-directory: lambda-store-get
         env:
           CI: true
         run: |
           npm ci
       - name: Deploy lambda in AWS
-        working-directory: lambda-category-list
+        working-directory: lambda-store-get
         run: |
           npx ncc build index.ts --minify=true
           zip -j deploy.zip ./dist/*
-          aws lambda update-function-code --function-name=offer-list-category --zip-file=fileb://deploy.zip
+          aws lambda update-function-code --function-name=offer-get-store --zip-file=fileb://deploy.zip
