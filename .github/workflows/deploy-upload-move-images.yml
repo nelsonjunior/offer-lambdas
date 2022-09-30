@@ -1,0 +1,39 @@
+name: Deploy Lambda Move Images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - lambda-upload-move-images/**
+
+  workflow_dispatch:
+
+jobs:
+  deploy_lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - name: NPM Install
+        working-directory: lambda-upload-move-images
+        env:
+          CI: true
+        run: |
+          npm ci
+      - name: Deploy lambda in AWS
+        working-directory: lambda-upload-move-images
+        run: |
+          npx ncc build index.ts --minify=true
+          zip -j deploy.zip ./dist/*
+          aws lambda update-function-code --function-name=offer-move-images-function --zip-file=fileb://deploy.zip
