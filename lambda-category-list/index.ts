@@ -5,7 +5,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     const docClient = new DocumentClient();
 
-    console.info(`request from: ${event.path} params: ${event.pathParameters}`);
+    console.info(`Request from: ${event.path} params: ${event.pathParameters}`);
 
     try {
 
