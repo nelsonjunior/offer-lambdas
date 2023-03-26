@@ -21,7 +21,6 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
         console.log(`store found ${JSON.stringify(store)}`);
 
-        const ddb = AWSXRay.captureAWSClient(new AWS.DynamoDB());
         return createResponse({
             code: 200,
             body: store
