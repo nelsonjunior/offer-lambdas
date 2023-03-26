@@ -3,7 +3,9 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 
 const AWSXRay = require('aws-xray-sdk');
-const docClient = AWSXRay.captureAWSClient(new DocumentClient());
+const docClient = new DocumentClient();
+
+AWSXRay.captureAWSClient((docClient as any).service);
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
 
@@ -19,6 +21,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
         console.log(`store found ${JSON.stringify(store)}`);
 
+        const ddb = AWSXRay.captureAWSClient(new AWS.DynamoDB());
         return createResponse({
             code: 200,
             body: store
