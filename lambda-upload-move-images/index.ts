@@ -1,8 +1,11 @@
 import {SNSEvent} from "aws-lambda";
-import {S3} from "aws-sdk";
+import * as AWS from 'aws-sdk';
+import AWSXRay from 'aws-xray-sdk';
 
-const AWSXRay = require('aws-xray-sdk');
-const s3 = AWSXRay.captureAWSClient(new S3({region: 'us-east-1'}));
+AWSXRay.captureAWS(AWS);
+
+const s3 = new AWS.S3({region: 'us-east-1'});
+const segment = AWSXRay.getSegment();
 export const handler = async (event: SNSEvent): Promise<any> => {
 
     console.log('Received event:', JSON.stringify(event, null, 4));
@@ -41,8 +44,10 @@ export const handler = async (event: SNSEvent): Promise<any> => {
                         Key:  `${offer.offerID}/${image}`,
                         Body: data.Body
                     };
-                    return s3.putObject(s3Params).promise().finally(() => {
+                    return s3.putObject(s3Params).promise()
+                        .finally(() => {
                         console.log('Completed image move:');
+                        segment.addMetadata('s3', s3Params);
                     });
                 }).finally(() => console.log('Image ready:', image));
         }
