@@ -1,9 +1,9 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResultV2} from "aws-lambda";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
+const docClient = new DocumentClient();
 
-    const docClient = new DocumentClient();
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
 
     console.info(`request from: ${event.path} params: ${event.pathParameters}`);
 
