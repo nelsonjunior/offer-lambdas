@@ -1,6 +1,8 @@
 import {SNSEvent} from "aws-lambda";
 import {S3} from "aws-sdk";
 
+const AWSXRay = require('aws-xray-sdk');
+const s3 = AWSXRay.captureAWSClient(new S3({region: 'us-east-1'}));
 export const handler = async (event: SNSEvent): Promise<any> => {
 
     console.log('Received event:', JSON.stringify(event, null, 4));
@@ -14,8 +16,6 @@ export const handler = async (event: SNSEvent): Promise<any> => {
     if (!!offer) {
 
         console.log('Move images:', offer.images);
-
-        const s3 = new S3({region: 'us-east-1'});
 
         const bucketOrigin = process.env.UPLOAD_BUCKET_ORIGIN;
 

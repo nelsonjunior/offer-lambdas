@@ -1,7 +1,9 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResultV2} from "aws-lambda";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
-const docClient = new DocumentClient();
+
+const AWSXRay = require('aws-xray-sdk');
+const docClient = AWSXRay.captureAWSClient(new DocumentClient());
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
 
