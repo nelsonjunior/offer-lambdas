@@ -1,13 +1,11 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResultV2} from "aws-lambda";
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-const AWSXRay = require('aws-xray-sdk-core')
+import * as AWS from 'aws-sdk';
+import AWSXRay from 'aws-xray-sdk';
 
+const docClient = AWSXRay.captureAWSClient(new AWS.DynamoDB.DocumentClient());
+const segment = AWSXRay.getSegment();
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
-
-    const docClient = new DocumentClient();
-
-    AWSXRay.captureAWSClient((docClient as any).service);
 
     console.info(`request from: ${event.path} params: ${event.pathParameters}`);
 
@@ -18,6 +16,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         const storeID = event.pathParameters.storeID;
 
         const store = await getStore(storeID, docClient)
+        segment.addMetadata('dynamodb', store);
 
         console.log(`store found ${JSON.stringify(store)}`);
 
@@ -27,6 +26,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         });
 
     } catch (error) {
+        segment.addError(error);
         return createResponseError(error.message);
     }
 }
@@ -44,7 +44,7 @@ function validateRequest(event: APIGatewayProxyEvent) {
 
 export const STORE_TABLE = 'store';
 
-async function getStore(storeID: string, docClient: DocumentClient): Promise<Store> {
+async function getStore(storeID: string, docClient: AWS.DynamoDB.DocumentClient): Promise<Store> {
 
     const params = {
         TableName: STORE_TABLE,
